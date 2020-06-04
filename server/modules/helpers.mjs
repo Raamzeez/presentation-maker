@@ -1,11 +1,4 @@
-const wiki = require('wikijs').default
-
-let level = 0
-
-// let finalMessage = ''
-let textData = ''
-
-const tabSpacing = numSpaces => {
+export const tabSpacing = numSpaces => {
     let spaceString = ''
     for (i = 0; i < numSpaces; i++){
         spaceString += '     '
@@ -13,7 +6,7 @@ const tabSpacing = numSpaces => {
     return spaceString
 }
 
-const parseParagraphs = stringData => {
+export const parseParagraphs = stringData => {
     stringData = stringData.split('\n')
     stringData.forEach(paragraph => {
         const firstSentence = paragraph.split('.')[0]
@@ -21,7 +14,7 @@ const parseParagraphs = stringData => {
     })
 }
 
-const splitSections = content => {
+export const splitSections = content => {
     content.forEach(section => {
         // let keys = Object.keys(section)
         if (section['items']){
@@ -43,9 +36,3 @@ const splitSections = content => {
         }
     })
 }
-
-const getBullets = async link => await (await wiki().page(link)).content()
-
-module.exports = getBullets
-
-
