@@ -44,22 +44,7 @@ const splitSections = content => {
     })
 }
 
-const getBullets = (link) => {
-    console.log('Link in the getBullets(): ' + link)
-    // finalMessage = ''
-    wiki()
-        .page(link)
-        .then(async page => {
-            textData = await page.content()
-            // splitSections(textData)
-            console.log(textData)
-        }
-        )
-        .catch(err => console.error(err))
-        
-    //return finalMessage
-    return textData
-}
+const getBullets = async link => await (await wiki().page(link)).content()
 
 module.exports = getBullets
 

@@ -1,12 +1,15 @@
 const getBullets = require('./Presentation_Maker.js')
 const express = require('express')
+const cors = require("cors")
+
 const PORT = 5000
 const app = express()
 
-app.get('/', (req, res) => {
-    console.log(req.query)
-    res.header('Access-Control-Allow-Origin', '*');
-    res.send(getBullets(req.query.link))
+app.use(cors())
+
+app.get('/', async (req, res) => {
+    const bullets = await getBullets(req.query.link)
+    res.send(bullets)
 })
 
-app.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`Server listening at localhost:${PORT}`))
