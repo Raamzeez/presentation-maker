@@ -14,13 +14,11 @@ const HomeView = () => {
 	const handleSubmit = async (e) => {
         try {
             e.preventDefault()
-            console.log('Link submited: ' + state.link)
             const resp = await api.get('http://localhost:5000/', {
                 params: {
                     link: state.link,
                 },
             })
-            console.log("Response: ", resp)
         } catch (err) {
             alert(`Could not send GET request: ${err}`)
         }

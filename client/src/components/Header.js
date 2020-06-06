@@ -20,9 +20,15 @@ const Header = () => {
 				)}
 			</Nav>
 			<Form inline>
-				<Link to='/login'>
-					<Button variant='outline-light'>Login</Button>
-				</Link>
+				{auth.isAuthenticated() ? (
+					<Link to='/logout'>
+						<Button variant='outline-light'>Logout</Button>
+					</Link>
+				) : (
+					<Link to='/login'>
+						<Button variant='outline-light'>Login</Button>
+					</Link>
+				)}
 			</Form>
 		</Navbar>
 	)

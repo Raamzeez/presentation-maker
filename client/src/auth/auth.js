@@ -1,4 +1,5 @@
 import api from '../api'
+import { useHistory } from "react-router-dom";
 
 class AuthService {
     constructor(){
@@ -6,28 +7,45 @@ class AuthService {
         this.auth_token = false
     }
 
-    isAuthenticated(){
+    isAuthenticated = () =>{
         return this.authenticated
     }
 
-    async login(email, password){
+    setAuthentication = (token) =>{
+        this.authenticated = true
+        this.auth_token = token
+        localStorage.setItem("auth_token", token)
+        return null
+    }
+
+     login = async (email, password) => {
         const resp = await api.post("/login", {email, password})
 
         if (resp.status !== 200) {
             // do something if login fails
+            return
         }
 
         // everything succeeded so save token and allow user to continue
         const { token } = resp.data
-        localStorage.setItem("auth_token", token)
-        this.authenticated = true
-        this.auth_token = token
+        this.setAuthentication(token)
     }
 
-    async logout(){
+     logout = async () => {
         this.authenticated = false
         this.auth_token = null
         localStorage.removeItem("auth_token")
+    }
+
+    register = async (userInfo) => {
+        const resp = await api.post("/user", userInfo)
+        if (resp.status !== 201){
+            // do something in case of error
+            alert("Something went wrong: " + resp.data)
+            return resp.data.error
+        }
+        const { token } = resp.data
+        return this.setAuthentication(token)
     }
 }
 
