@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Card, Form, Button, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import isMobile from 'is-mobile'
 
 const LoginView = () => {
 	const [state, setState] = useState({
@@ -10,10 +11,12 @@ const LoginView = () => {
 
 	const onChangeHandler = (e) => setState({ [e.target.id]: e.target.value })
 
+	const cardWidth = isMobile() ? '80%' : '50%'
+
 	return (
 		<Row>
 			<Col xs={12}>
-				<Card style={{ width: '50%', margin: 'auto' }}>
+				<Card style={{ width: cardWidth, margin: 'auto' }}>
 					<Card.Header>Login</Card.Header>
 					<Card.Body>
 						<Form>

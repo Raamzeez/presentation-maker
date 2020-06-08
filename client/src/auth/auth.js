@@ -1,7 +1,8 @@
 import api from '../api'
-import { useHistory } from "react-router-dom";
+import { observable, action } from 'mobx'
 
 class AuthService {
+    @observable authenticated = false
     constructor(){
         this.authenticated = false
         this.auth_token = false
@@ -18,7 +19,7 @@ class AuthService {
         return null
     }
 
-     login = async (email, password) => {
+    login = async (email, password) => {
         const resp = await api.post("/login", {email, password})
 
         if (resp.status !== 200) {
@@ -31,7 +32,7 @@ class AuthService {
         this.setAuthentication(token)
     }
 
-     logout = async () => {
+    logout = async () => {
         this.authenticated = false
         this.auth_token = null
         localStorage.removeItem("auth_token")
