@@ -7,15 +7,16 @@ router.post('/user/', async (req, res) => {
 	const newUser = new UserAccount(req.body)
 	const errs = newUser.isValid()
 	if (errs) {
-		console.log("[POST /user/] - Validation errors:")
+		console.log('[POST /user/] - Validation errors:')
 		console.table(errs)
-		return res
-			.status(422)
-			.send(
-				`UserAccount invalid properties: ${errs
+		return res.status(422).send({
+			error: {
+				errorName: 'Validation Error',
+				errorMessage: `UserAccount invalid properties: ${errs
 					.map((e) => e.propertyName)
-					.join(', ')}`
-			)
+					.join(', ')}`,
+			},
+		})
 	}
 	const registeredUser = await newUser.register()
 	return res.status(201).send(registeredUser)

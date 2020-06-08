@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
-import { Card, Form, Button, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Card, Form, Button, Row, Col, Alert } from 'react-bootstrap'
+import { Link, useLocation } from 'react-router-dom'
 import isMobile from 'is-mobile'
+import qs from 'qs'
 
 const LoginView = () => {
+	const location = useLocation()
+	const { registrationSuccessful, email } = qs.parse(location.search, {
+		ignoreQueryPrefix: true,
+	})
 	const [state, setState] = useState({
 		loginFormEmail: '',
 		loginFormPassword: '',
@@ -11,12 +16,23 @@ const LoginView = () => {
 
 	const onChangeHandler = (e) => setState({ [e.target.id]: e.target.value })
 
-	const cardWidth = isMobile() ? '80%' : '50%'
+	const elemWidth = isMobile() ? '80%' : '50%'
 
 	return (
 		<Row>
 			<Col xs={12}>
-				<Card style={{ width: cardWidth, margin: 'auto' }}>
+				{registrationSuccessful && (
+					<Alert
+						variant='success'
+						style={{ width: elemWidth, margin: 'auto', marginBottom: '20px' }}
+					>
+						Successful Registration - Your registration was successful. Please
+						login now using email: {email}
+					</Alert>
+				)}
+			</Col>
+			<Col xs={12}>
+				<Card style={{ width: elemWidth, margin: 'auto' }}>
 					<Card.Header>Login</Card.Header>
 					<Card.Body>
 						<Form>
@@ -38,12 +54,12 @@ const LoginView = () => {
 									onChange={onChangeHandler}
 								/>
 							</Form.Group>
-							<Button variant='primary' type='submit'>
+							<Button variant='primary' type='button'>
 								Login
 							</Button>
 							&nbsp; &nbsp;
 							<Link to='/register'>
-								<Button variant='secondary' type='submit'>
+								<Button variant='secondary' type='button'>
 									Register
 								</Button>
 							</Link>

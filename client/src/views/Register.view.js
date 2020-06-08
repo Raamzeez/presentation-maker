@@ -1,9 +1,17 @@
 import React, { useState } from 'react'
-import { Card, Form, Button, Row, Col } from 'react-bootstrap'
-import { Link, useHistory } from 'react-router-dom'
-import auth from '../auth/auth'
+import { Card, Form, Button, Row, Col, Alert } from 'react-bootstrap'
+import { Link, useHistory, useLocation } from 'react-router-dom'
+import useStore from '../hooks/useStore'
+import isMobile from 'is-mobile'
+import qs from 'qs'
+
 
 const RegisterView = () => {
+	const location = useLocation()
+	const { errorMessage, errorName } = qs.parse(location.search, {
+		ignoreQueryPrefix: true,
+	})
+	const { authStore } = useStore()
 	const history = useHistory()
 	const [state, setState] = useState({
 		firstName: '',
@@ -13,27 +21,42 @@ const RegisterView = () => {
 		confirmPassword: '',
 	})
 
-    const onChangeHandler = (e) => setState({ ...state, [e.target.id]: e.target.value })
-    
-    const onSubmitHandler = async e => {
-        e.preventDefault()
-        const stateCopy = { ...state }
-        if(state.password !== state.confirmPassword){
-            alert("Passwords do not match!")
-            return
-        }
-        delete stateCopy["confirmPassword"]
-		const err = await auth.register(stateCopy)
+	const onChangeHandler = (e) => setState({ ...state, [e.target.id]: e.target.value })
+
+	const onSubmitHandler = async (e) => {
+		e.preventDefault()
+		const stateCopy = { ...state }
+		if (state.password !== state.confirmPassword) {
+			alert('Passwords do not match!')
+			return
+		}
+		delete stateCopy['confirmPassword']
+		const err = await authStore.register(stateCopy)
 		if (err) {
-			// do something with error object
-		} 
-		history.push("/")
-    }
+			const queryStr = qs.stringify(err)
+			history.push('/register?' + queryStr)
+			return
+		}
+		const queryStr = qs.stringify({ registrationSuccessful: true, email: stateCopy.email})
+		history.push('/login?' + queryStr)
+	}
+
+	const elemWidth = isMobile() ? '80%' : '50%'
 
 	return (
 		<Row>
 			<Col xs={12}>
-				<Card style={{ width: '50%', margin: 'auto' }}>
+				{errorName && (
+					<Alert
+						variant='danger'
+						style={{ width: elemWidth, margin: 'auto', marginBottom: '20px' }}
+					>
+						{errorName} - {errorMessage}
+					</Alert>
+				)}
+			</Col>
+			<Col xs={12}>
+				<Card style={{ width: elemWidth, margin: 'auto' }}>
 					<Card.Header>Register Account</Card.Header>
 					<Card.Body>
 						<Form>
@@ -82,7 +105,11 @@ const RegisterView = () => {
 									onChange={onChangeHandler}
 								/>
 							</Form.Group>
-							<Button variant='primary' type='submit' onClick={onSubmitHandler}>
+							<Button
+								variant='primary'
+								type='submit'
+								onClick={onSubmitHandler}
+							>
 								Register
 							</Button>
 							&nbsp; &nbsp;

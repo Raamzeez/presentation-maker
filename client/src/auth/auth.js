@@ -1,55 +1,55 @@
 import api from '../api'
 import { observable, action } from 'mobx'
 
-class AuthService {
-    @observable authenticated = false
-    constructor(){
-        this.authenticated = false
-        this.auth_token = false
-    }
+class AuthStore {
+	@observable authenticated = false
+	@observable auth_token = null
 
-    isAuthenticated = () =>{
-        return this.authenticated
-    }
+	setAuthentication(token) {
+		this.authenticated = true
+		this.auth_token = token
+		localStorage.setItem('auth_token', token)
+		return null
+	}
 
-    setAuthentication = (token) =>{
-        this.authenticated = true
-        this.auth_token = token
-        localStorage.setItem("auth_token", token)
-        return null
-    }
+	// Deprecated: no longer needed
+	@action.bound
+	isAuthenticated() {
+		return this.authenticated
+	}
 
-    login = async (email, password) => {
-        const resp = await api.post("/login", {email, password})
+	@action.bound
+	async login(email, password) {
+		const resp = await api.post('/login', { email, password })
 
-        if (resp.status !== 200) {
-            // do something if login fails
-            return
-        }
+		if (resp.status !== 200) {
+			// do something if login fails
+			return
+		}
 
-        // everything succeeded so save token and allow user to continue
-        const { token } = resp.data
-        this.setAuthentication(token)
-    }
+		// everything succeeded so save token and allow user to continue
+		const { token } = resp.data
+		this.setAuthentication(token)
+	}
 
-    logout = async () => {
-        this.authenticated = false
-        this.auth_token = null
-        localStorage.removeItem("auth_token")
-    }
+	@action.bound
+	async logout() {
+		this.authenticated = false
+		this.auth_token = null
+		localStorage.removeItem('auth_token')
+	}
 
-    register = async (userInfo) => {
-        const resp = await api.post("/user", userInfo)
-        if (resp.status !== 201){
+	@action.bound
+	async register(userInfo) {
+		const resp = await api.post('/user', userInfo)
+		if (resp.status !== 201) {
             // do something in case of error
-            alert("Something went wrong: " + resp.data)
-            return resp.data.error
-        }
-        const { token } = resp.data
-        return this.setAuthentication(token)
-    }
+            console.log(resp.data)
+			alert('Something went wrong: ' + resp.data)
+			return resp.data.error
+		}
+		return null
+	}
 }
 
-const auth = new AuthService()
-
-export default auth
+export default AuthStore

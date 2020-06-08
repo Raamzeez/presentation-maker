@@ -1,10 +1,10 @@
 import React from 'react'
-import auth from '../auth/auth'
 import { Redirect } from 'react-router-dom'
+import useStore from '../hooks/useStore'
 
 const AuthenticatedView = () => {
-
-    const isAuthenticated =  auth.isAuthenticated()
+    const { authStore } = useStore()
+    const isAuthenticated =  authStore.isAuthenticated()
 
     if (!isAuthenticated){
         return <Redirect to="/login"/>

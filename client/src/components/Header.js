@@ -1,14 +1,16 @@
 import React from 'react'
 import { Navbar, Nav, Form, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import auth from '../auth/auth'
+import { observer } from 'mobx-react'
+import useStore from '../hooks/useStore'
 
-const Header = () => {
+const Header = observer(() => {
+	const { authStore } = useStore()	
 	return (
 		<Navbar bg='primary' variant='dark'>
 			<Navbar.Brand href='#home'>Presentation Maker</Navbar.Brand>
 			<Nav className='mr-auto'>
-				{auth.isAuthenticated() && (
+				{authStore.authenticated && (
 					<>
 						<Link component={Nav.Link} to='/'>
 							Home
@@ -20,7 +22,7 @@ const Header = () => {
 				)}
 			</Nav>
 			<Form inline>
-				{auth.isAuthenticated() ? (
+				{authStore.authenticated ? (
 					<Link to='/logout'>
 						<Button variant='outline-light'>Logout</Button>
 					</Link>
@@ -32,5 +34,6 @@ const Header = () => {
 			</Form>
 		</Navbar>
 	)
-}
+})
+
 export default Header
