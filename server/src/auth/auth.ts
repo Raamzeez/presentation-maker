@@ -1,5 +1,6 @@
 import passportJWT from 'passport-jwt'
 import passport from 'passport'
+import { Request, Response, NextFunction } from 'express'
 
 const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
@@ -20,8 +21,10 @@ export const strategy = new JwtStrategy(
 	}
 )
 
-export const authenticator = function (req, res, next) {
-	passport.authenticate('jwt', { session: false }, function (err, user, info) {
+export const authenticator = function (req: Request, res: Response, next: NextFunction) {
+	passport.authenticate('jwt', { session: false }, function (info, user, err) {
+		console.log(err)
+		console.log(info)
 		if (err && err.expired)
 			return res
 				.status(401)

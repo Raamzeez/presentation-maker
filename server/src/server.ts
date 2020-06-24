@@ -1,15 +1,17 @@
-import dotenv from 'dotenv/config.js'
-import express from 'express'
+import dotenv from 'dotenv'
+dotenv.config()
+import express, {NextFunction} from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import morgan from 'morgan'
-import { strategy, authenticator } from './auth/auth.mjs'
+import { strategy, authenticator } from './auth/auth'
 import passport from 'passport'
 
 // Route Imports
-import userRoutes from './routes/user.routes.mjs'
-import unauthenticatedRoutes from './routes/unauthenticated.routes.mjs'
+import userRoutes from './routes/user.routes'
+import presentationRoutes from './routes/presentation.routes'
+import unauthenticatedRoutes from './routes/unauthenticated.routes'
 
 const PORT = 5000
 const app = express()
@@ -26,6 +28,7 @@ app.use('/api', unauthenticatedRoutes)
 
 app.use('/api', authenticator)
 app.use('/api/user', userRoutes)
+app.use('/api/presentation', presentationRoutes)
 
 mongoose.connect(
 	'mongodb://localhost/presentation_maker_db',
