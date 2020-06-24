@@ -4,6 +4,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import useStore from '../hooks/useStore'
 import isMobile from 'is-mobile'
 import qs from 'qs'
+import './Register.view.scss'
 
 
 const RegisterView = () => {
@@ -59,7 +60,7 @@ const RegisterView = () => {
 				<Card style={{ width: elemWidth, margin: 'auto' }}>
 					<Card.Header>Register Account</Card.Header>
 					<Card.Body>
-						<Form>
+						<Form onSubmit={onSubmitHandler}>
 							<Form.Group controlId='firstName'>
 								<Form.Label>First Name</Form.Label>
 								<Form.Control
@@ -67,6 +68,9 @@ const RegisterView = () => {
 									placeholder='Enter First Name'
 									value={state.firstName}
 									onChange={onChangeHandler}
+									minLength="2"
+									maxLength="50"
+									required
 								/>
 							</Form.Group>
 							<Form.Group controlId='lastName'>
@@ -76,6 +80,9 @@ const RegisterView = () => {
 									placeholder='Enter Last Name'
 									value={state.lastName}
 									onChange={onChangeHandler}
+									minLength="2"
+									maxLength="50"
+									required
 								/>
 							</Form.Group>
 							<Form.Group controlId='email'>
@@ -85,6 +92,10 @@ const RegisterView = () => {
 									placeholder='Enter email'
 									value={state.email}
 									onChange={onChangeHandler}
+									minLength="2"
+									maxLength="200"
+									required
+									pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
 								/>
 							</Form.Group>
 							<Form.Group controlId='password'>
@@ -94,6 +105,9 @@ const RegisterView = () => {
 									placeholder='Password'
 									value={state.password}
 									onChange={onChangeHandler}
+									minLength="6"
+									maxLength="128"
+									required
 								/>
 							</Form.Group>
 							<Form.Group controlId='confirmPassword'>
@@ -103,12 +117,14 @@ const RegisterView = () => {
 									placeholder='Password again'
 									value={state.confirmPassword}
 									onChange={onChangeHandler}
+									minLength="6"
+									maxLength="128"
+									required
 								/>
 							</Form.Group>
 							<Button
 								variant='primary'
 								type='submit'
-								onClick={onSubmitHandler}
 							>
 								Register
 							</Button>

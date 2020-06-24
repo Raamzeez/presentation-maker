@@ -5,6 +5,15 @@ class AuthStore {
 	@observable authenticated = false
 	@observable auth_token = null
 
+	constructor(){
+		const token = localStorage.getItem('auth_token')
+		console.log(token)
+		if (token){
+			this.authenticated = true
+			this.auth_token = token
+		}
+	}
+
 	setAuthentication(token) {
 		this.authenticated = true
 		this.auth_token = token
@@ -13,23 +22,20 @@ class AuthStore {
 	}
 
 	// Deprecated: no longer needed
-	@action.bound
-	isAuthenticated() {
-		return this.authenticated
-	}
 
 	@action.bound
-	async login(email, password) {
-		const resp = await api.post('/login', { email, password })
+	async login({ email, password }) {
+		const resp = await api.post('/user/login', { email, password })
 
 		if (resp.status !== 200) {
 			// do something if login fails
-			return
+			return resp.data.error
 		}
 
 		// everything succeeded so save token and allow user to continue
 		const { token } = resp.data
 		this.setAuthentication(token)
+		return null
 	}
 
 	@action.bound
@@ -43,9 +49,7 @@ class AuthStore {
 	async register(userInfo) {
 		const resp = await api.post('/user', userInfo)
 		if (resp.status !== 201) {
-            // do something in case of error
-            console.log(resp.data)
-			alert('Something went wrong: ' + resp.data)
+			// do something in case of error
 			return resp.data.error
 		}
 		return null

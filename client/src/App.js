@@ -1,9 +1,10 @@
 import React from 'react'
 import './App.css'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import LoginView from './views/Login.view'
 import RegisterView from './views/Register.view'
 import AuthenticatedView from './views/Autheticated.view'
+import LogoutView from './views/Logout.view'
 import { Container, Col, Row } from 'react-bootstrap'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -34,15 +35,20 @@ class App extends React.Component {
 						noGutters={true}
 					>
 						<Col sm={12} xs={12}>
-							<Route exact path='/'>
-								<AuthenticatedView />
-							</Route>
-							<Route exact path='/login'>
-								<LoginView />
-							</Route>
-							<Route exact path='/register'>
-								<RegisterView />
-							</Route>
+							<Switch>
+								<Route exact path='/login'>
+									<LoginView />
+								</Route>
+								<Route exact path='/register'>
+									<RegisterView />
+								</Route>
+								<Route exact path='/logout'>
+									<LogoutView />
+								</Route>
+								<Route path='/'>
+									<AuthenticatedView />
+								</Route>
+							</Switch>
 						</Col>
 					</Row>
 					<Row

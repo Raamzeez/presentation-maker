@@ -1,20 +1,26 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Switch, Route } from 'react-router-dom'
 import useStore from '../hooks/useStore'
+import PresentationsOverviewView from './PresentationsOverview.view'
+import PresentationsNewView from './PresentationsNew.view'
 
 const AuthenticatedView = () => {
-    const { authStore } = useStore()
-    const isAuthenticated =  authStore.isAuthenticated()
+	const { authStore } = useStore()
 
-    if (!isAuthenticated){
-        return <Redirect to="/login"/>
-    }
+	if (!authStore.authenticated) {
+		return <Redirect to='/login' />
+	}
 
-    return (
-        <div>
-            AuthenticatedView
-        </div>
-    )
+	return (
+		<Switch>
+			<Route exact path='/presentations'>
+				<PresentationsOverviewView />
+			</Route>
+            <Route exact path='/presentations/new'>
+                <PresentationsNewView/>
+            </Route>
+		</Switch>
+	)
 }
 
 export default AuthenticatedView
