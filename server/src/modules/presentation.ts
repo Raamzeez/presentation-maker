@@ -54,7 +54,7 @@ export default class Presentation implements IPresentation {
     async read(ID: string): Promise<Error | null> {
         try {
             const foundPresentation = await presentationsDB.findById(ID)
-            Object.assign(this, foundPresentation)
+            Object.assign(this, foundPresentation?.toObject())
             return null
         } catch(err){
             return err
@@ -63,8 +63,8 @@ export default class Presentation implements IPresentation {
 
     async update(updateData: Partial<IPresentation>): Promise<Error | null> {
         try {
-            const updatedPresentation = await presentationsDB.findByIdAndUpdate(this._id, updateData)
-            Object.assign(this, updatedPresentation)
+            const updatedPresentation = await presentationsDB.findByIdAndUpdate(this._id, updateData, { new: true })
+            Object.assign(this, updatedPresentation?.toObject())
             return null
         } catch (err){
             return err
@@ -80,11 +80,16 @@ export default class Presentation implements IPresentation {
         }
     }
 
+    static async readAll(): Promise<[IPresentation[], Error | null]>{
+        try {
+            const presentations = await presentationsDB.find()
+            return [presentations, null]
+        } catch(err) {
+            return [[], err]
+        }
+    }
+
 }
 
 const presentationsDB = mongoose.model<IPresentationDocument>('presentations', new Schema(Presentation.schema))
-
-const p = new Presentation({})
-
-p.update({name: 'blah'})
 

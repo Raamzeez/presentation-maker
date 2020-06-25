@@ -16,3 +16,14 @@ To run client:
 To run server:
 
 `cd server && npm run start`
+
+### Running MongoDB
+
+To install on MacOS:
+
+1. `brew tap mongodb/brew`
+2. `brew install mongodb-community@4.2`
+
+To start MongoDB: 
+
+`brew services start mongodb-community@4.2`
