@@ -1,25 +1,29 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Row, Col, Card, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import PresentationCard from '../components/PresentationCard'
+import api from '../api/index'
 
 const PresentationsOverviewView = () => {
+
+    const getAllPresentations = async () => {
+        const resp = await api.get('/presentation/all')
+        if (resp.status !== 200) {
+            console.log(resp.data)
+        }
+        console.log(resp.data)
+    }
+
+    useEffect(() => {
+        getAllPresentations()
+    })
 
     return (
         <Row>
             <Col xs={12}>
-                <Card style={{ margin: "auto 15px"}}>
-                    <Card.Header>
-                        Your Presentations
-                    </Card.Header>
-                    <Card.Body>
-                        No Presentations<br/><br/>
-                        <Link to="/presentations/new">
-                            <Button type="button">
-                                Create New
-                            </Button>
-                        </Link>
-                    </Card.Body>
-                </Card>
+                <PresentationCard />
+                <PresentationCard />
+                <PresentationCard />
             </Col>
         </Row>
     )
