@@ -24,6 +24,6 @@ To install on MacOS:
 1. `brew tap mongodb/brew`
 2. `brew install mongodb-community@4.2`
 
-To start MongoDB: 
+To start MongoDB on MacOS: 
 
 `brew services start mongodb-community@4.2`
