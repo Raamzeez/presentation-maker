@@ -36,6 +36,7 @@ export const authenticator = function (req: Request, res: Response, next: NextFu
 				message: 'There was something wrong with your request.',
 			})
 		}
+		console.log("authenticator middleware.user: ", user)
 		req.user = user
 		return next()
 	})(req, res, next)

@@ -3,6 +3,8 @@ import { Redirect, Switch, Route } from 'react-router-dom'
 import useStore from '../hooks/useStore'
 import PresentationsOverviewView from './PresentationsOverview.view'
 import PresentationsNewView from './PresentationsNew.view'
+import GoogleOAuthCallbackView from './GoogleOAuthCallback.view'
+import GoogleOAuthSetupView from './GoogleOAuthSetup.view'
 
 const AuthenticatedView = () => {
 	const { authStore } = useStore()
@@ -13,12 +15,18 @@ const AuthenticatedView = () => {
 
 	return (
 		<Switch>
+			<Route exact path='/google-setup'>
+				<GoogleOAuthSetupView />
+			</Route>
 			<Route exact path='/presentations'>
 				<PresentationsOverviewView />
 			</Route>
-            <Route exact path='/presentations/new'>
-                <PresentationsNewView/>
-            </Route>
+			<Route exact path='/presentations/new'>
+				<PresentationsNewView />
+			</Route>
+			<Route exact path='/google-oauth-callback'>
+				<GoogleOAuthCallbackView />
+			</Route>
 		</Switch>
 	)
 }

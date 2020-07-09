@@ -2,39 +2,51 @@ import mongoose, { Document, Schema } from 'mongoose'
 import checkType from 'checktypes-js'
 import bcrypt  from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { Credentials } from '../modules/google_api'
 
 interface IUserAccount {
+	_id: string
 	firstName: string
 	lastName: string
 	email: string
 	password: string
-	googleOAuthToken: string
+	googleOAuthToken: Credentials
 }
 
 type IUserAccountDocument = IUserAccount & Document
 
 export default class UserAccount implements IUserAccount {
 
+	public _id: string
 	public firstName: string
 	public lastName: string
 	public email: string
 	public password: string
-	public googleOAuthToken: string
+	public googleOAuthToken: Credentials
 
 	static schema = {
 		firstName: String,
 		lastName: String,
 		email: String,
 		password: String,
-		googleOAuthToken: String,
+		googleOAuthToken: {
+			refresh_token: String,
+			expiry_date: Number,
+			access_token: String,
+			token_type: String,
+			id_token: String,
+			scope: String,
+		},
 	}
 
-	constructor(userInfo: UserAccount) {
-		this.firstName = userInfo.firstName
-		this.lastName = userInfo.lastName
-		this.email = userInfo.email
-		this.password = userInfo.password
-		this.googleOAuthToken = userInfo.googleOAuthToken
+	constructor(userInfo: Partial<UserAccount>) {
+		Object.assign(this, userInfo)
+		// this.firstName = userInfo.firstName
+		// this.lastName = userInfo.lastName
+		// this.email = userInfo.email
+		// this.password = userInfo.password
+		// this.googleOAuthToken = userInfo.googleOAuthToken
+		// this._id = userInfo._id
 	}
 
 	// isValid function check to see if UserAccount instance in valid
@@ -80,6 +92,30 @@ export default class UserAccount implements IUserAccount {
         const token = jwt.sign(payload, process.env.SECRET_KEY || "")
         
 		return [token, null]
+	}
+
+	async read(ID: string): Promise<Error | null> {
+		try {
+			const foundUser = await userDB.findById(ID)
+			Object.assign(this, foundUser?.toObject())
+			return null
+		} catch (err) {
+			return err
+		}
+	}
+
+	async update(updateData: Partial<UserAccount>): Promise<Error | null> {
+		try {
+			const updatedPresentation = await userDB.findByIdAndUpdate(
+				this._id,
+				updateData,
+				{ new: true }
+			)
+			Object.assign(this, updatedPresentation?.toObject())
+			return null
+		} catch (err) {
+			return err
+		}
 	}
 }
 
