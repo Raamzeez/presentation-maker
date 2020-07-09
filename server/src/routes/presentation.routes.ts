@@ -7,6 +7,7 @@ const router = express.Router()
 router.get('/all', async (req, res) => {
     const [allPresentations, err] = await Presentation.readAll()
     if (err) {
+        console.error(err)
         return res.status(400).send({
             error: {
                 name: "Bad Request",
@@ -30,7 +31,7 @@ router.post('/', async (req, res) => {
             }
         })
     }
-    const [id, err] = await presentation.create()
+    const [,err] = await presentation.create()
     if (err){
         console.error(err)
         return res.status(400).send({

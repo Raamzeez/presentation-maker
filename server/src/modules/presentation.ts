@@ -1,7 +1,8 @@
 import mongoose, { Document, Schema} from 'mongoose'
-import checkType from 'checktypes-js'
+import checkTypes from 'checktypes-js'
 import bcrypt  from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import Joi from '@hapi/joi'
 
 interface IPresentation {
     _id: string
@@ -34,11 +35,13 @@ export default class Presentation implements IPresentation {
 
 	// isValid function check to see if Presentation instance in valid
 	isValid() {
-		const [errs] = checkType(this, {
-			...Presentation.schema,
-			$required: ['wikiLink', 'name'],
-		})
-		return errs
+        const schema = Joi.object({
+            name: Joi.string().min(5).max(30).pattern(/^[A-Za-z\s]+$/).required(),
+            wikiLink: Joi.string().uri().pattern(/wikipedia.org/).required()
+        })
+        const results = schema.prefs({ abortEarly: false }).validate(this)
+        console.log(results.error)
+        return results.error || null
     }    
     
     async create(): Promise<[string, Error | null]> {
