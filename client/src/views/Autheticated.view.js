@@ -1,10 +1,11 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { Redirect, Switch, Route } from 'react-router-dom'
 import useStore from '../hooks/useStore'
 import PresentationsOverviewView from './PresentationsOverview.view'
 import PresentationsNewView from './PresentationsNew.view'
 import GoogleOAuthCallbackView from './GoogleOAuthCallback.view'
 import GoogleOAuthSetupView from './GoogleOAuthSetup.view'
+import HomeView from './Home.view'
 
 const AuthenticatedView = () => {
 	const { authStore } = useStore()
@@ -15,6 +16,9 @@ const AuthenticatedView = () => {
 
 	return (
 		<Switch>
+			<Route exact path="/">
+				<HomeView />
+			</Route>
 			<Route exact path='/google-setup'>
 				<GoogleOAuthSetupView />
 			</Route>

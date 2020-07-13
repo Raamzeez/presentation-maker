@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
+import {Row, Col} from 'react-bootstrap'
 import api from '../api'
+import GoogleOAuthCard from '../components/GoogleOAuthCard'
 
 const GoogleOAuthSetupView = () => {
 	const [googleSigninURL, setGoogleSigninURL] = useState(null)
@@ -13,15 +14,12 @@ const GoogleOAuthSetupView = () => {
 	}, [])
 
 	return (
-		<div>
-			Hey.. sign in!
-			<br />
-			{googleSigninURL && (
-				<a href={googleSigninURL}>
-					<Button>Sign in To Google</Button>
-				</a>
-			)}
-		</div>
+
+		<Row className="justify-content-md-center">
+			<Col xs={12} md={6}>
+				<GoogleOAuthCard googleSigninURL={googleSigninURL}/>
+			</Col>
+		</Row>
 	)
 }
 

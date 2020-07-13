@@ -10,7 +10,7 @@ interface IUserAccount {
 	lastName: string
 	email: string
 	password: string
-	googleOAuthToken: Credentials
+	googleOAuthCredentials: Credentials
 }
 
 type IUserAccountDocument = IUserAccount & Document
@@ -22,14 +22,14 @@ export default class UserAccount implements IUserAccount {
 	public lastName: string
 	public email: string
 	public password: string
-	public googleOAuthToken: Credentials
+	public googleOAuthCredentials: Credentials
 
 	static schema = {
 		firstName: String,
 		lastName: String,
 		email: String,
 		password: String,
-		googleOAuthToken: {
+		googleOAuthCredentials: {
 			refresh_token: String,
 			expiry_date: Number,
 			access_token: String,
