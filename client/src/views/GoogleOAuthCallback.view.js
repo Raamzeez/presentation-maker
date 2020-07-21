@@ -1,62 +1,116 @@
-import React, { useEffect, useState } from 'react'
-import {Alert, Row, Col} from 'react-bootstrap'
+import React from 'react'
+import { Alert, Row, Col } from 'react-bootstrap'
 import qs from 'qs'
 import { useLocation, Redirect } from 'react-router-dom'
+import { createMachine, assign } from 'xstate'
+import { useMachine } from '@xstate/react'
+import ClipLoader from 'react-spinners/ClipLoader'
 import api from '../api'
 
-const GoogleOAuthCallbackView = () => {
-	const [state, setState] = useState({
-		checked: false,
-		error: false,
-		errorName: '',
-		errorMessage: '',
-	})
-	const location = useLocation()
-	const queryData = qs.parse(location.search, { ignoreQueryPrefix: true })
-	console.log('queryData: ', queryData)
+// Checking Code
+// Success
+// Failure
 
-	const oAuthCallback = async () => {
-		const resp = await api.post('/user/google-oauth-callback', {
-			code: queryData.code,
-		})
-		console.log('resp: ', resp)
-		if (resp.status !== 200) {
-			setState({
-				checked: true,
-				error: true,
-				errorName: resp.data.error.name,
-				errorMessage: resp.data.error.message,
-			})
-			return
+// ...?code=5434tj335g
+
+const oAuthCallback = async (code) => {
+	const resp = await api.post('/user/google-oauth-callback', {
+		code,
+	})
+
+	if (resp.status !== 200) {
+		// eslint-disable-next-line
+		throw {
+			errorName: resp.data.error.name,
+			errorMessage: resp.data.error.message,
 		}
-		setState({...state, checked: true })
 	}
 
-	useEffect(() => {
-		oAuthCallback()
-	}, [])
+	return resp.data
+}
 
-	console.log(state)
+const googleOAuthViewStateMachine = createMachine({
+	id: 'GoogleOAuthViewStateMachine',
+	initial: 'idle',
+	context: {
+		code: '',
+		error: {},
+	},
+	states: {
+		idle: {
+			on: {
+				'': [
+					{
+						target: 'checkingCode',
+						cond: (context) => !!context.code,
+					},
+					{
+						target: 'failure',
+						actions: assign({
+							error: (context, event) => ({
+								errorName: 'Invalid Code',
+								errorMessage:
+									'The code returned back from Google was either missing or invalid.',
+							}),
+						}),
+					},
+				],
+			},
+		},
+		checkingCode: {
+			invoke: {
+				id: 'checkingGoogleCode',
+				src: (context, event) => oAuthCallback(context.code),
+				onDone: {
+					target: 'success',
+				},
+				onError: {
+					target: 'failure',
+					actions: assign({ error: (context, event) => event.data }),
+				},
+			},
+		},
+		success: {
+			after: {
+				2000: 'redirect',
+			},
+		},
+		failure: {},
+		redirect: {},
+	},
+})
 
-	if(state.checked && !state.error) {
-		return 	<Redirect to='/' />
+const GoogleOAuthCallbackView = () => {
+	const location = useLocation()
+	const queryData = qs.parse(location.search, { ignoreQueryPrefix: true })
+
+	const [current] = useMachine(
+		googleOAuthViewStateMachine.withContext({
+			code: queryData.code,
+		})
+	)
+
+	if (current.matches('redirect')) {
+		return <Redirect to='/' />
 	}
 
 	return (
-		<Row>
-			<Col>
-				{state.error && (
+		<Row className="justify-content-center">
+			<Col className="text-center">
+				{current.matches('failure') && (
 					<Alert variant='danger'>
-						{state.errorName} - {state.errorMessage}
-				  	</Alert>
+						{current.context.error.errorName} - {current.context.error.errorMessage}
+					</Alert>
 				)}
-				{!state.checked && (
-					// <Alert variant="primary">
-					// 	Loading...
-					// </Alert>
-					<h1 className="text-center">
-						Loading...
-					</h1>
+				{current.matches('checkingCode') && (
+					<ClipLoader
+						size={100}
+						color={'#123abc'}
+						loading={true}
+					/>
+				)}
+				{current.matches('success') && (
+					<h1 className='text-center'>Succesfully connected your Google Account!</h1>
 				)}
 			</Col>
 		</Row>

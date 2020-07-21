@@ -64,7 +64,7 @@ export default class UserAccount implements IUserAccount {
 	// register function will register user and put inside the database
 	async register(): Promise<[this | null, Error | null]> {
 		const foundAccount = await userDB.findOne({ email: this.email })
-		console.log(foundAccount)
+
 		if (foundAccount) {
 			return [null, new Error('An account already exists with that email.')]
 		}
@@ -75,7 +75,7 @@ export default class UserAccount implements IUserAccount {
 	}
 
 	static async login({ email, password }: { email: string, password: string}) {
-        console.log(email, password)
+
 		const foundUser = await userDB.findOne({ email })
 		if (!foundUser) {
 			return [null, new Error('A user with that email does not exist.')]

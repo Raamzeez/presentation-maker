@@ -43,7 +43,7 @@ export default class Presentation implements IPresentation {
 				.required(),
 		})
 		const results = schema.prefs({ abortEarly: false }).validate(this)
-		console.log(results.error)
+
 		return results.error || null
 	}
 

@@ -9,6 +9,7 @@ const GoogleOAuthCard = ({ googleSigninURL }) => {
 					src='https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-google-icon-logo-png-transparent-svg-vector-bie-supply-14.png'
 					width={25}
 					style={{ marginRight: '15px' }}
+					alt="Google Logo"
 				/>
 				Sign in With Google
 			</Card.Header>

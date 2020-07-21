@@ -62,11 +62,11 @@ class GoogleAPI {
 		const presentation = await slides.presentations.get({
 			presentationId,
 		})
-		console.log(JSON.stringify(presentation.data.slides, null, 2))
+
 	}
 
 	async healthCheck(): Promise<[TokenInfo | null, Error | null]>{
-		console.log(this.OAuthClient.credentials)
+
 		try {
 			if(this.OAuthClient.credentials.access_token){
 				const t = await this.OAuthClient.getTokenInfo(this.OAuthClient.credentials.access_token)

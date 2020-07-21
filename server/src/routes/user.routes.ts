@@ -19,8 +19,8 @@ router.post('/google-oauth-callback', async (req, res) => {
 		return res.status(400).send({
 			error: {
 				name: 'Google Connection Failure',
-				message: 'Could not connect to Google Server'
-			}
+				message: 'Could not connect to Google Server',
+			},
 		})
 	}
 	if (tokenRes.res.status !== 200) {
@@ -32,29 +32,31 @@ router.post('/google-oauth-callback', async (req, res) => {
 			},
 		})
 	}
-	console.log('google access_token returned: ', tokenRes.tokens)
+
 	const err2 = await user.update({ googleOAuthCredentials: tokenRes.tokens })
 	if (err2) {
-		return res.status(400).send({
-			error: {
-				name: 'Bad Request',
-				message: 'Failed to update user with Google access_token!',
-				data: err,
-			},
-		})
+	return res.status(400).send({
+		error: {
+			name: 'Bad Request',
+			message: 'Failed to update user with Google access_token!',
+			data: err,
+		},
+	})
 	}
-	res.send('OK')
+	setTimeout(() => {
+		res.status(200).send('OK')
+	}, 800)
 })
 
 router.get('/google-oauth-check', async (req, res) => {
 	const g = new GoogleAPI()
 	const user = new UserAccount({})
-	if (!req.user){
+	if (!req.user) {
 		return res.status(401).send({
 			error: {
 				name: 'Not Authenticated',
-				message: 'The user is not authenticated'
-			}
+				message: 'The user is not authenticated',
+			},
 		})
 	}
 	const err = await user.read(req.user?.sub)
@@ -63,20 +65,19 @@ router.get('/google-oauth-check', async (req, res) => {
 		return res.status(401).send({
 			error: {
 				name: 'User Not Found',
-				message: 'Unable to find user in database'
-			}
+				message: 'Unable to find user in database',
+			},
 		})
 	}
-	console.log('userOAuthCredentials', user.googleOAuthCredentials)
 	g.setCredentials(user.googleOAuthCredentials)
 	const [token, healthError] = await g.healthCheck()
 	if (healthError) {
 		console.error(healthError)
 		return res.status(400).send({
-			ok: false	
+			ok: false,
 		})
 	}
-	return res.status(200).send({ok: true})
+	return res.status(200).send({ ok: true })
 })
 
 export default router

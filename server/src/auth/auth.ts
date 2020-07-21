@@ -23,8 +23,7 @@ export const strategy = new JwtStrategy(
 
 export const authenticator = function (req: Request, res: Response, next: NextFunction) {
 	passport.authenticate('jwt', { session: false }, function (info, user, err) {
-		console.log(err)
-		console.log(info)
+
 		if (err && err.expired)
 			return res
 				.status(401)
@@ -36,7 +35,7 @@ export const authenticator = function (req: Request, res: Response, next: NextFu
 				message: 'There was something wrong with your request.',
 			})
 		}
-		console.log("authenticator middleware.user: ", user)
+
 		req.user = user
 		return next()
 	})(req, res, next)

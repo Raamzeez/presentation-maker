@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import { Redirect, Switch, Route } from 'react-router-dom'
 import useStore from '../hooks/useStore'
 import PresentationsOverviewView from './PresentationsOverview.view'
@@ -7,7 +7,7 @@ import GoogleOAuthCallbackView from './GoogleOAuthCallback.view'
 import GoogleOAuthSetupView from './GoogleOAuthSetup.view'
 import HomeView from './Home.view'
 
-const AuthenticatedView = () => {
+const AuthenticatedView =  () => {
 	const { authStore } = useStore()
 
 	if (!authStore.authenticated) {

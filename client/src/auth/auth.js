@@ -7,7 +7,6 @@ class AuthStore {
 
 	constructor(){
 		const token = localStorage.getItem('auth_token')
-		console.log(token)
 		if (token){
 			this.authenticated = true
 			this.auth_token = token

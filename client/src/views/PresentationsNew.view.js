@@ -7,7 +7,7 @@ import qs from 'qs'
 const PresentationsNewView = () => {
 	const history = useHistory()
 	const location = useLocation()
-	const { error, name, message } = qs.parse(location.search, {
+	const { name, message } = qs.parse(location.search, {
 		ignoreQueryPrefix: true,
 	})
 
@@ -22,7 +22,7 @@ const PresentationsNewView = () => {
 
 	const onSubmitHandler = async (e) => {
 		e.preventDefault()
-		console.log(state)
+
 		const resp = await api.post('/presentation', {
 			wikiLink: state.wikiLink,
 			name: state.name,
